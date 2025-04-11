@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Time Tracker</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Settings and Report Toggles -->
+        <div class="header">
+            <h2>Project Time Tracker</h2>
+            <div class="header-buttons">
+                 <button id="report-toggle-btn" title="Report">📊</button> <!-- Report Toggle Button -->
+                 <button id="settings-toggle-btn" title="Settings">⚙️</button> <!-- Settings Toggle Button -->
+            </div>
+        </div>
+
+        <!-- Main Tracking View -->
+        <div id="main-view">
+            <div class="section project-selection">
+                <label for="project-select">Project:</label>
+                <div class="project-controls">
+                    <select id="project-select"></select>
+                    <input type="text" id="new-project-name" placeholder="Add New">
+                    <button id="add-project-btn" title="Add New Project">+</button>
+                </div>
+            </div>
+
+            <div class="section timer-section">
+                <h3 id="current-project">No project selected</h3>
+                <div id="current-timer">00:00:00</div>
+                <div class="timer-buttons">
+                    <button id="start-btn" disabled>Start</button>
+                    <button id="stop-btn" disabled>Stop</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section (Initially Hidden) -->
+        <div id="settings-section" class="section settings-section" style="display: none;">
+            <h3>Settings</h3>
+            <!-- Webhook URL -->
+            <div class="settings-item">
+                <label for="webhook-url-input">n8n Webhook URL:</label>
+                <input type="url" id="webhook-url-input" placeholder="Enter your n8n webhook URL">
+                <button id="save-settings-btn">Save Settings</button>
+                <p id="settings-saved-msg" style="display: none; color: green; margin-top: 5px;">Settings saved!</p>
+            </div>
+            <hr class="settings-hr"> <!-- Separator -->
+            <!-- Manage Projects List -->
+            <div class="settings-item">
+                 <label>Manage Projects:</label>
+                 <div id="project-list-settings">
+                     <!-- Project list will be populated by JS -->
+                     <p>Loading projects...</p>
+                 </div>
+                 <div class="pagination-controls">
+                     <button id="project-list-prev" disabled>&lt; Prev</button>
+                     <span id="project-list-page-info">Page 1 of 1</span>
+                     <button id="project-list-next" disabled>Next &gt;</button>
+                 </div>
+            </div>
+        </div>
+
+         <!-- Report Section (Initially Hidden) -->
+         <div id="report-section" class="section report-section" style="display: none;">
+              <h3>Time Report</h3>
+              <div id="report-summary">
+                  <!-- Report text summary populated by JS -->
+                  <p>Loading report...</p>
+              </div>
+              <div id="report-visual">
+                   <!-- Visualization bars populated by JS -->
+              </div>
+         </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html> 

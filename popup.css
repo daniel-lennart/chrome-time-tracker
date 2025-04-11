@@ -1,0 +1,431 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    width: 320px;
+    padding: 0;
+    margin: 0;
+    background-color: #f7f7f7; /* Light background for the body */
+}
+
+.container {
+    padding: 15px;
+}
+
+/* Header Style */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px; /* Add some space below header */
+}
+
+.header h2 {
+    margin: 0; /* Remove default margins */
+    flex-grow: 1; /* Allow title to take space */
+    text-align: left; /* Align title left */
+}
+
+#settings-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+    color: #555;
+}
+
+#settings-toggle-btn:hover {
+    color: #000;
+}
+
+/* Settings Section */
+.settings-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.settings-item {
+    margin-bottom: 15px;
+}
+
+.settings-item label {
+    display: block;
+    margin-bottom: 8px; /* Increased margin */
+    font-weight: bold;
+}
+
+.settings-section input[type="url"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.settings-section button { /* Style for Save button */
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.settings-section button:hover {
+    background-color: #0056b3;
+}
+
+hr.settings-hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+}
+
+.manage-project-buttons button {
+    padding: 7px 10px;
+    font-size: 1em; /* Adjust size */
+    margin-right: 10px; /* Space between buttons */
+    border: 1px solid #ccc;
+    background-color: #eee;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.manage-project-buttons button:hover:not(:disabled) {
+     background-color: #ddd;
+}
+
+/* Specific style for delete button hover (within settings) */
+.manage-project-buttons #delete-project-btn:hover:not(:disabled) {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.3em;
+    color: #333;
+}
+
+h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    color: #555;
+    text-align: center;
+}
+
+.section {
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #fff; /* White background for sections */
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Project Selection Section */
+.project-selection label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #444;
+}
+
+.project-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Increased gap slightly for better spacing */
+}
+
+.project-controls select {
+    /* Removed flex-grow: 1 to let it size based on content initially */
+    /* Let's try giving select and input more defined flexible widths */
+    flex: 1 1 auto; /* Allow grow/shrink, basis auto */
+    min-width: 80px; /* Prevent select from becoming too small */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.project-controls input[type="text"] {
+    /* Removed flex-grow: 2 */
+    flex: 2 1 auto; /* Grow more than select, allow shrink, basis auto */
+    min-width: 100px; /* Prevent input from becoming too small */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.project-controls button {
+    /* Explicitly set flex properties to prevent shrinking */
+    flex: 0 0 auto; /* Don't grow, don't shrink, basis auto */
+    padding: 7px 12px; /* Reverted padding for '+' button */
+    font-size: 1.1em;
+    font-weight: bold;
+    line-height: 1; /* Ensure text/icon is centered vertically */
+    border: 1px solid #ccc;
+    background-color: #eee;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Timer Section */
+.timer-section {
+    text-align: center;
+}
+
+#current-project {
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+#current-timer {
+    font-size: 2em; /* Larger timer display */
+    font-weight: bold;
+    color: #007bff; /* Use a theme color */
+    display: block;
+    margin-bottom: 12px;
+    font-family: 'Courier New', Courier, monospace; /* Monospaced font */
+}
+
+.timer-buttons button {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: background-color 0.2s ease;
+}
+
+#start-btn {
+    background-color: #28a745; /* Green */
+    color: white;
+}
+
+#start-btn:hover:not(:disabled) {
+    background-color: #218838;
+}
+
+#stop-btn {
+    background-color: #dc3545; /* Red */
+    color: white;
+}
+
+#stop-btn:hover:not(:disabled) {
+    background-color: #c82333;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 20px 0;
+}
+
+/* Summary Section */
+.summary-section h3 {
+    margin-bottom: 12px;
+}
+
+#summary-list {
+    max-height: 100px; /* Limit height and add scroll if needed */
+    overflow-y: auto;
+    margin-bottom: 10px;
+    background-color: #fdfdfd;
+    padding: 8px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+#summary-list p {
+    margin: 4px 0;
+    font-size: 0.95em;
+    color: #333;
+}
+
+#copy-paste-summary {
+    width: 100%; /* Use full width */
+    box-sizing: border-box; /* Include padding/border in width */
+    margin-top: 5px;
+    padding: 8px;
+    font-family: monospace;
+    font-size: 0.9em;
+    background-color: #e9ecef; /* Slightly different background */
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    resize: vertical; /* Allow vertical resize */
+}
+
+.header-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.header-buttons button {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+    color: #555;
+}
+
+.header-buttons button:hover {
+    color: #000;
+}
+
+#project-list-settings {
+    border: 1px solid #eee;
+    padding: 5px;
+    min-height: 50px;
+    margin-bottom: 10px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.project-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 5px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.project-list-item:last-child {
+    border-bottom: none;
+}
+
+.project-list-item span {
+    flex-grow: 1;
+    margin-right: 10px;
+    color: #333;
+}
+
+.project-item-controls button {
+    background: transparent; /* Explicitly set background */
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 2px 4px;
+    margin-left: 5px;
+    color: #333; /* Dark color for icon */
+    line-height: 1;
+    opacity: 0.7; /* Slightly faded by default */
+}
+
+.project-item-controls button:hover {
+    color: #000;
+    opacity: 1; /* Full opacity on hover */
+}
+
+.project-item-controls button.delete-proj-btn:hover {
+    color: #dc3545; /* Red hover for delete */
+    opacity: 1;
+}
+
+.project-item-controls button:disabled {
+     opacity: 0.3; /* More faded when disabled */
+     cursor: not-allowed;
+}
+
+.pagination-controls {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.pagination-controls button {
+    padding: 5px 10px;
+    font-size: 0.9em;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    background-color: #f8f8f8;
+    border-radius: 3px;
+    cursor: pointer;
+    color: #333; /* Explicitly set dark text color for enabled state */
+}
+
+.pagination-controls button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+    color: #666; /* Even darker gray for text */
+    background-color: #eee; /* Add a light background for contrast */
+    border-color: #ddd; /* Slightly lighter border */
+}
+
+.pagination-controls span {
+    font-size: 0.9em;
+    color: #555;
+    margin: 0 10px;
+}
+
+/* Report Section */
+.report-section {
+    margin-top: 15px;
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+#report-summary p {
+    margin-bottom: 15px;
+    color: #333;
+    line-height: 1.4;
+}
+
+#report-visual {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.vis-item {
+    margin-bottom: 8px;
+}
+
+.vis-label {
+    display: block;
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 3px;
+}
+
+.vis-bar-container {
+    flex-grow: 1;
+    margin-left: 10px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden; /* Prevent bar overflow */
+    position: relative; /* For text positioning */
+}
+
+.vis-bar {
+    height: 20px;
+    background-color: #007bff;
+    border-radius: 4px;
+    transition: width 0.5s ease-out;
+    display: flex; /* For text alignment */
+    align-items: center; /* Center text vertically */
+    justify-content: flex-end; /* Align text to the right */
+    /* Ensure bar doesn't exceed container */
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.vis-bar-text {
+    font-size: 0.8em;
+    color: white;
+    white-space: nowrap;
+} 
