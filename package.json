@@ -1,0 +1,47 @@
+{
+  "name": "chrome-time-tracker",
+  "version": "1.0.0",
+  "description": "A simple Chrome extension for tracking time spent on different projects",
+  "main": "popup.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daniel-lennart/chrome-time-tracker.git"
+  },
+  "keywords": [
+    "chrome-extension",
+    "time-tracking",
+    "productivity"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/daniel-lennart/chrome-time-tracker/issues"
+  },
+  "homepage": "https://github.com/daniel-lennart/chrome-time-tracker#readme",
+  "devDependencies": {
+    "@babel/preset-env": "^7.22.10",
+    "jest": "^29.6.2",
+    "jest-environment-jsdom": "^29.6.2"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "setupFiles": [
+      "<rootDir>/tests/jest.setup.js"
+    ],
+    "collectCoverageFrom": [
+      "popup.js"
+    ],
+    "coverageDirectory": "./coverage/"
+  }
+} 
