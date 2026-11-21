@@ -7,7 +7,7 @@
     "storage"
   ],
   "host_permissions": [
-    "https://prot-prep.app.n8n.cloud/"
+    "https://*.app.n8n.cloud/*"
   ],
   "action": {
     "default_popup": "popup.html",

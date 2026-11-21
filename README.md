@@ -1,122 +1,77 @@
-# TimeTracker Chrome Extension
+# Chrome Time Tracker
 
-A simple yet powerful Chrome extension for tracking time spent on different projects. Track your work with a single click, visualize your time distribution, and export data to external services via webhooks.
+A small Manifest V3 Chrome extension for tracking time against projects, with optional export of each session to a webhook (for example n8n or Make).
 
-## Features
+[![Test](https://github.com/daniel-lennart/chrome-time-tracker/actions/workflows/test.yml/badge.svg)](https://github.com/daniel-lennart/chrome-time-tracker/actions/workflows/test.yml)
 
-- **Project-based Time Tracking**: Create and manage multiple projects
-- **One-Click Tracking**: Quickly start/stop tracking for recently used projects
-- **Date-Based Records**: Automatically organizes tracked time by date
-- **Visual Reports**: View time distribution across projects with a simple bar chart
-- **Webhook Integration**: Connect with automation platforms like n8n, Make.com, or any webhook-compatible service
-- **Project Management**: Rename or delete projects as needed
-- **Pagination**: Efficiently manage large numbers of projects
+Start and stop a timer for a named project from the toolbar popup. Time is stored locally per project and per day, shown as a simple bar chart, and, if you configure a webhook, each finished session is posted as JSON so you can log it to a spreadsheet or automation workflow.
 
-## Installation
+<!-- TODO: screenshot -->
 
-1. **Download/Clone the Repository**
+## Quick start
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/daniel-lennart/chrome-time-tracker.git
    ```
-   git clone https://github.com/your-username/TimeTracker.git
-   ```
-   Or download as a ZIP file and extract it.
+2. In Chrome, open `chrome://extensions/`, enable **Developer mode** and click **Load unpacked**, then select the cloned folder.
+3. Open the extension popup, add a project with **+** and press **Start** / **Stop**.
+4. Optional: open Settings (⚙️), paste a webhook URL and click **Save Settings**. See [Permissions and privacy](#permissions-and-privacy) before using a webhook that is not on n8n Cloud.
 
-2. **Load in Chrome**
-   - Open Chrome and navigate to `chrome://extensions/`
-   - Enable "Developer mode" (toggle in the top-right corner)
-   - Click "Load unpacked" and select the extension directory
+To run the tests:
 
-3. **Configure Webhook (Optional)**
-   - Click the settings icon (⚙️) in the extension popup
-   - Enter your webhook URL from n8n, Make.com, or any other webhook service
-   - Click "Save" to store your webhook configuration
-
-## Usage
-
-### Basic Time Tracking
-1. Select a project from the dropdown or create a new one
-2. Click "Start" to begin tracking time
-3. Click "Stop" when finished
-
-### Project Management
-1. Access the Settings view by clicking the gear icon (⚙️)
-2. Use the pagination controls to navigate through your projects
-3. Click the edit icon (✏️) to rename a project
-4. Click the delete icon (🗑️) to remove a project
-
-### Reports
-1. Access the Reports view by clicking the chart icon (📊)
-2. View a summary of total time tracked
-3. See a visual representation of time distribution across projects
-
-## Webhook Integration
-
-When you stop tracking time, the extension can automatically send session data to an external service via webhook. This allows for:
-
-- Logging time entries to spreadsheets (Google Sheets, Excel, etc.)
-- Creating invoices or time reports
-- Triggering automation workflows
-
-### Compatible Services
-- **n8n**: Create workflows to process and route your time data
-- **Make.com** (formerly Integromat): Connect your time tracking to hundreds of apps
-- **Zapier**: Automate your time tracking integrations
-- **Custom APIs**: Send data to your own backend services
-
-### Data Format
-The extension sends the following JSON payload to your webhook endpoint:
-```json
-{
-  "sessionStartTime": "2023-05-15T14:30:45.123Z",
-  "sessionStopTime": "2023-05-15T15:45:12.456Z",
-  "date": "2023-05-15",
-  "projectName": "Project Name",
-  "durationSeconds": 4467
-}
+```bash
+npm install
+npm test
 ```
 
-## Data Structure
+## How it works
 
-Time tracking data is stored locally using Chrome's storage API with the following structure:
+- Everything lives in the popup (`popup.html`, `popup.js`, `popup.css`); there is no background service worker.
+- The start time of the active session is saved to `chrome.storage.local`, so closing the popup does not stop the timer.
+- On **Stop**, the elapsed seconds are added to the project's total and to the entry for the current date.
+- Settings lets you rename or delete projects (five per page). The Report view (📊) shows all-time totals per project as a bar chart.
+- If a webhook URL is saved and the session lasted at least one second, the popup sends one `POST` with this body:
+
+  ```json
+  {
+    "sessionStartTime": "2023-05-15T14:30:45.123Z",
+    "sessionStopTime": "2023-05-15T15:45:12.456Z",
+    "date": "2023-05-15",
+    "projectName": "Project Name",
+    "durationSeconds": 4467
+  }
+  ```
+
+Stored data shape (`chrome.storage.local`):
 
 ```javascript
 {
   "projects": {
-    "Project 1": {
-      "totalSeconds": 3600,
-      "entries": {
-        "2023-05-15": 1800,
-        "2023-05-16": 1800
-      }
-    },
-    "Project 2": {
-      "totalSeconds": 7200,
-      "entries": {
-        "2023-05-15": 3600,
-        "2023-05-17": 3600
-      }
-    }
+    "Project 1": { "totalSeconds": 3600, "entries": { "2023-05-15": 1800, "2023-05-16": 1800 } }
   },
-  "activeState": {
-    "projectName": "Currently Active Project",
-    "startTime": 1684157445123
-  },
-  "lastTrackedProjectName": "Most Recently Tracked Project",
-  "n8nWebhookUrl": "https://your-webhook-url.com/hook"
+  "activeState": { "projectName": "Project 1", "startTime": 1684157445123 },
+  "lastTrackedProjectName": "Project 1",
+  "n8nWebhookUrl": "https://example.com/webhook"
 }
 ```
 
-## Customization
+## Permissions and privacy
 
-The extension can be customized by modifying:
-- `popup.html` for changing layout structure
-- `popup.css` for updating styles and appearance
-- `popup.js` for altering functionality and behavior
-- `manifest.json` for extension configuration
+- **`storage`**: projects, time entries, the active session and the webhook URL are kept in `chrome.storage.local` on your machine. The extension does not read tabs, history or page content.
+- **`host_permissions`**: `manifest.json` allows `https://*.app.n8n.cloud/*`, so any n8n Cloud webhook works. Chrome only grants the popup permission to make cross-origin requests to hosts listed there; requests to any other webhook (Make, a self-hosted n8n) are subject to CORS and may be blocked unless that server allows them. To use another endpoint, add its origin to `host_permissions` and reload the extension. Keep the list as narrow as you can: it is the extension's only network permission.
+- **What leaves the browser**: nothing, unless you save a webhook URL. If you do, each stopped session sends the five fields shown above (start and stop time, date, project name, duration) to that URL and nowhere else. There is no analytics or telemetry.
+- The popup logs the webhook URL and payload to its developer-tools console.
 
-## License
+## Limitations
 
-[MIT License](LICENSE)
+- Manual tracking only, one project at a time; it does not detect activity or websites.
+- A session is credited to the date on which it is stopped, including sessions that run past midnight.
+- Webhook delivery is a single attempt with no retry or queue; failures are only written to the console (local data is saved regardless).
+- The report shows all-time totals only; per-day entries are stored but not displayed.
+- The Jest tests re-implement the helper logic inside the test files rather than importing `popup.js`, so they do not exercise the extension code directly.
+- The CI workflow runs `npm ci`, which needs a `package-lock.json`; the lock file is currently listed in `.gitignore`.
 
-## Contributing
+## Licence
 
-Contributions are welcome! Please feel free to submit a Pull Request. 
+MIT. See [LICENSE](LICENSE).
