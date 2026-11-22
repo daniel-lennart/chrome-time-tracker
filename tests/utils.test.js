@@ -3,25 +3,7 @@
  * These tests focus on standalone functions that don't require extensive DOM interaction.
  */
 
-// Extract formatTime function from popup.js for testing
-// Note: In a more modular codebase, we would import this function directly
-function formatTime(totalSeconds) {
-  if (totalSeconds === undefined || totalSeconds === null || isNaN(totalSeconds)) {
-    return '00:00:00';
-  }
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = Math.floor(totalSeconds % 60);
-  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-}
-
-function getCurrentDateString() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-  const day = String(today.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+const { formatTime, getCurrentDateString } = require('../lib.js');
 
 describe('formatTime utility', () => {
   test('formats seconds into HH:MM:SS format', () => {

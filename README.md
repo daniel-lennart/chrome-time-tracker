@@ -21,7 +21,7 @@ Start and stop a timer for a named project from the toolbar popup. Time is store
 To run the tests:
 
 ```bash
-npm install
+npm ci
 npm test
 ```
 
@@ -69,8 +69,7 @@ Stored data shape (`chrome.storage.local`):
 - A session is credited to the date on which it is stopped, including sessions that run past midnight.
 - Webhook delivery is a single attempt with no retry or queue; failures are only written to the console (local data is saved regardless).
 - The report shows all-time totals only; per-day entries are stored but not displayed.
-- The Jest tests re-implement the helper logic inside the test files rather than importing `popup.js`, so they do not exercise the extension code directly.
-- The CI workflow runs `npm ci`, which needs a `package-lock.json`; the lock file is currently listed in `.gitignore`.
+- Unit tests cover the pure helpers in `lib.js` (time formatting, name validation, webhook payload and POST), which `popup.js` uses; the popup's DOM wiring has no automated tests.
 
 ## Licence
 

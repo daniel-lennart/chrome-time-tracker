@@ -47,25 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let projectsCurrentPage = 1;
     const PROJECTS_PER_PAGE = 5;
 
-    // --- Helper Functions ---
-    function getCurrentDateString() {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-        const day = String(today.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
-
-    // Helper function to format time
-    function formatTime(totalSeconds) {
-        if (totalSeconds === undefined || totalSeconds === null || isNaN(totalSeconds)) {
-            return '00:00:00';
-        }
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = Math.floor(totalSeconds % 60);
-        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
+    // --- Helper Functions (lib.js) ---
+    const { getCurrentDateString, formatTime, validateProjectName, buildWebhookPayload, postToWebhook } = window.TimeTrackerLib;
 
     // --- View Management ---
     function showView(viewId) {
@@ -345,28 +328,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Project Management Functions ---
     function addProject() {
-        let newName = newProjectNameInput.value;
-        // Always trim before any validation
-        const trimmedNewName = newName.trim();
-        
-        // Add input validation/sanitization for project names
-        if (!trimmedNewName) {
-            alert('Please enter a project name.');
+        const check = validateProjectName(newProjectNameInput.value);
+        if (!check.valid) {
+            alert(check.message);
             return;
         }
-        
-        // Prevent potentially malicious project names
-        if (trimmedNewName.length > 50) {
-            alert('Project name too long. Please use 50 characters or less.');
-            return;
-        }
-        
-        // Basic XSS protection - restrict special characters
-        const invalidChars = /[<>'"&]/;
-        if (invalidChars.test(trimmedNewName)) {
-            alert('Project name contains invalid characters. Please avoid < > \' " &');
-            return;
-        }
+        const trimmedNewName = check.trimmedName;
         
         if (projects[trimmedNewName] === undefined) {
             projects[trimmedNewName] = { totalSeconds: 0, entries: {} };
@@ -421,26 +388,13 @@ document.addEventListener('DOMContentLoaded', () => {
           const newName = prompt(`Enter new name for project \"${oldName}\":`, oldName);
 
           if (newName === null) return;
-          const trimmedNewName = newName.trim();
-
-          if (trimmedNewName === '') {
-               alert("Project name cannot be empty.");
+          const check = validateProjectName(newName);
+          if (!check.valid) {
+               alert(check.message);
                return;
           }
+          const trimmedNewName = check.trimmedName;
           if (trimmedNewName === oldName) {
-              return;
-          }
-          
-          // Prevent potentially malicious project names
-          if (trimmedNewName.length > 50) {
-              alert('Project name too long. Please use 50 characters or less.');
-              return;
-          }
-          
-          // Basic XSS protection - restrict special characters
-          const invalidChars = /[<>'"&]/;
-          if (invalidChars.test(trimmedNewName)) {
-              alert('Project name contains invalid characters. Please avoid < > \' " &');
               return;
           }
           
@@ -600,22 +554,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper function for webhook fetch call
     function sendToWebhook(startTime, stopTime, currentDate, projectName, durationSeconds) {
-        const payload = {
-            sessionStartTime: new Date(startTime).toISOString(),
-            sessionStopTime: new Date(stopTime).toISOString(),
-            date: currentDate,
-            projectName: projectName,
-            durationSeconds: durationSeconds
-        };
+        const payload = buildWebhookPayload(startTime, stopTime, currentDate, projectName, durationSeconds);
         console.log('Sending payload to n8n:', JSON.stringify(payload));
-        return fetch(n8nWebhookUrl, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) })
-            .then(response => {
-                if (!response.ok) {
-                    console.error('n8n webhook call failed:', response.status, response.statusText);
-                    throw new Error(`N8N request failed: ${response.status}`);
-                }
+        return postToWebhook(n8nWebhookUrl, payload)
+            .then(result => {
                 console.log('Successfully sent data to n8n.');
-                return { success: true };
+                return result;
             })
             .catch(error => {
                 console.error('Fetch error sending data to n8n:', error);

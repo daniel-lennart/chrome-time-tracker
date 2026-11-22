@@ -40,8 +40,9 @@
       "<rootDir>/tests/jest.setup.js"
     ],
     "collectCoverageFrom": [
+      "lib.js",
       "popup.js"
     ],
     "coverageDirectory": "./coverage/"
   }
-} 
+}

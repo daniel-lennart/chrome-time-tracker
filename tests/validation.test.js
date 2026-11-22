@@ -2,25 +2,7 @@
  * Tests for project name validation logic in TimeTracker.
  */
 
-// Extract validation logic to a testable function
-function validateProjectName(name) {
-  const trimmedName = name.trim();
-  
-  if (!trimmedName) {
-    return { valid: false, message: 'Please enter a project name.' };
-  }
-  
-  if (trimmedName.length > 50) {
-    return { valid: false, message: 'Project name too long. Please use 50 characters or less.' };
-  }
-  
-  const invalidChars = /[<>'"&]/;
-  if (invalidChars.test(trimmedName)) {
-    return { valid: false, message: 'Project name contains invalid characters. Please avoid < > \' " &' };
-  }
-  
-  return { valid: true, trimmedName };
-}
+const { validateProjectName } = require('../lib.js');
 
 describe('Project name validation', () => {
   test('accepts valid project names', () => {
@@ -64,3 +46,13 @@ describe('Project name validation', () => {
     expect(validateProjectName('Project > Test < Project').valid).toBe(false);
   });
 }); 
+describe('Project name validation (rename inputs)', () => {
+  test('trims surrounding whitespace and returns the trimmed name', () => {
+    expect(validateProjectName('  Renamed  ')).toEqual({ valid: true, trimmedName: 'Renamed' });
+  });
+
+  test('treats null/undefined (e.g. a cancelled prompt passed through) as empty', () => {
+    expect(validateProjectName(null).valid).toBe(false);
+    expect(validateProjectName(undefined).valid).toBe(false);
+  });
+});
